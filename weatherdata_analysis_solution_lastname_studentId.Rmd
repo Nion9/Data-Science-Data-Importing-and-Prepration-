@@ -1,0 +1,257 @@
+---
+title: 'Assignment 1 - Solution'
+author name: 'provide your name'
+author ID: 'provide your student id'
+output:
+  html_document: rmdformats::readthedown
+editor_options: 
+  markdown: 
+    wrap: 100
+---
+***
+
+## Data Description
+The following code generates the required dataset for this assignment. It will create a data frame with 155 rows and 13 columns. The variables of this data frame are as following:
+
+- `Date`: Date of the reading (in YYYY-MM-DD format)
+- `Temperature`: Temperature reading in Celsius
+- `Humidity`: Humidity reading as a percentage
+- `Pressure`: Atmospheric pressure in millibars
+- `WindSpeed`: Wind speed in kilometers per hour
+- `WindDirection`: Wind direction
+- `DewPoint`: Dew point temperature in Celsius
+- `CloudCover`: Cloud cover as a percentage
+- `Precipitation`: Precipitation amount in millimeters
+- `Visibility`: Visibility distance in kilometers
+- `UVIndex`: UV index reading
+- `condition`: The global weather condition over the day
+- `Location`: The city of the recorded data
+
+```{r, eval=FALSE}
+# Set the seed for reproducibility
+set.seed(246)
+
+# Create a sequence of dates for few months in 2024
+date_March <- seq(from = as.Date("2024-03-01"), to = as.Date("2024-03-31"), by = 1)
+date_May <- seq(from = as.Date("2024-05-01"), to = as.Date("2024-05-31"), by = 1)
+date_July <- seq(from = as.Date("2024-07-01"), to = as.Date("2024-07-31"), by = 1)
+date_October <- seq(from = as.Date("2024-10-01"), to = as.Date("2024-10-31"), by = 1)
+date_December <- seq(from = as.Date("2024-12-01"), to = as.Date("2024-12-31"), by = 1)
+
+dates = c(date_March, date_May, date_July, date_October, date_December)
+
+# Determine the correct number of repetitions for Location
+cities <- c("Canberra", "Melbourne", "Sydney")
+Location <- rep(cities, length.out = length(dates))
+
+# Create a data frame to store the weather data
+weather <- data.frame(
+  Date = dates,
+  Temperature = round(runif(length(dates), 2, 37), 1),
+  Humidity = sample(50:100, length(dates), replace = TRUE),
+  Pressure = sample(995:1015, length(dates), replace = TRUE),
+  WindSpeed = sample(5:20, length(dates), replace = TRUE),
+  WindDirection = sample(c("N", "NE", "E", "SE", "S", "SW", "W", "NW"), length(dates), replace = TRUE),
+  DewPoint = round(runif(length(dates), 10, 15), 1),
+  CloudCover = sample(0:100, length(dates), replace = TRUE),
+  Precipitation = round(runif(length(dates), 0, 15), 1),
+  Visibility = sample(5:20, length(dates), replace = TRUE),
+  UVIndex = sample(1:12, length(dates), replace = TRUE),
+  Condition = sample(c("Sunny", "Partly Cloudy", "Rainy", "Snowy"), length(dates), replace = TRUE),
+  Location = Location
+)
+
+```
+
+***
+
+## Initial Section:
+
+## Submission for Part A: Data Understanding
+Please follow this structure:
+
+```{asis, echo=TRUE}
+
+----------------------------------
+
+1- The data set description goes here
+
+This dataset ....
+
+
+
+----------------------------------
+```
+
+```{r}
+#----------------------------------#
+
+# 2-  The code for task 2 goes here
+
+
+
+#----------------------------------#
+
+# 3-  The code for task 3 goes here
+
+
+
+#----------------------------------#
+```
+```{asis, echo=TRUE}
+4- The reflection and notes for task 2 and 3 goes here
+
+For task 2, ...
+
+
+For task 3, ...
+
+
+----------------------------------
+
+```
+
+## Submission for part B: Vector and Matrix Manipulation
+Please follow this structure:
+
+```{r}
+#----------------------------------#
+
+# 1-  The code for task 1 goes here
+
+
+
+#----------------------------------#
+
+# 2-  The code for task 2 goes here
+
+
+
+#----------------------------------#
+
+# 3-  The code for task 3 goes here
+
+
+
+#----------------------------------#
+
+# 4-  The code for task 4 goes here
+
+
+
+#----------------------------------#
+
+# 5-  The code for task 5 goes here
+
+
+
+#----------------------------------#
+
+# 6-  The code for task 6 goes here
+
+
+
+#----------------------------------#
+
+# 7-  The code for task 7 goes here
+
+
+
+#----------------------------------#
+
+```
+
+*** 
+
+## Submission for part C: Looping and Conditional Statements
+Please follow this structure:
+
+```{r}
+#----------------------------------#
+
+# 1-  The code for task 1 goes here
+
+
+
+#----------------------------------#
+
+# 2-  The code for task 2 goes here
+
+
+
+#----------------------------------#
+
+# 3-  The code for task 3 goes here
+
+
+
+#----------------------------------#
+
+# 4-  The code for task 4 goes here
+
+
+
+#----------------------------------#
+
+# 5-  The code for task 5 goes here
+
+
+
+#----------------------------------#
+```
+
+*** 
+
+## Submission for part D: Data Frame Manipulation
+Please follow this structure:
+
+```{r}
+#----------------------------------#
+
+# 1-  The code for task 1 goes here
+
+
+
+#----------------------------------#
+
+# 2-  The code for task 2 goes here
+
+
+
+#----------------------------------#
+
+# 3-  The code for task 3 goes here
+
+
+
+#----------------------------------#
+
+# 4-  The code for task 4 goes here
+
+
+
+#----------------------------------#
+# 5-  The code for task 5 goes here
+
+
+
+#----------------------------------#
+
+# 6-  The code for task 6 goes here
+
+
+
+#----------------------------------#
+
+# 7-  The code for task 7 goes here
+
+
+
+#----------------------------------#
+```
+
+***
+
+## Overall Conclusion
+
+Your overall reflection about this assignment goes here ...

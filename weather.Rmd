@@ -1,0 +1,345 @@
+---
+title: 'Assignment 1 - Solution'
+author name: 'Minhajul Islam Nion'
+author ID: 'u3266650'
+output:
+  html_document: rmdformats::readthedown
+editor_options: 
+  markdown: 
+    wrap: 100
+---
+***
+
+## Data Description
+The following code generates the required dataset for this assignment. It will create a data frame with 155 rows and 13 columns. The variables of this data frame are as following:
+
+- `Date`: Date of the reading (in YYYY-MM-DD format)
+- `Temperature`: Temperature reading in Celsius
+- `Humidity`: Humidity reading as a percentage
+- `Pressure`: Atmospheric pressure in millibars
+- `WindSpeed`: Wind speed in kilometers per hour
+- `WindDirection`: Wind direction
+- `DewPoint`: Dew point temperature in Celsius
+- `CloudCover`: Cloud cover as a percentage
+- `Precipitation`: Precipitation amount in millimeters
+- `Visibility`: Visibility distance in kilometers
+- `UVIndex`: UV index reading
+- `condition`: The global weather condition over the day
+- `Location`: The city of the recorded data
+
+```{r, eval=FALSE}
+# Set the seed for reproducibility
+set.seed(246)
+
+# Create a sequence of dates for few months in 2024
+date_March <- seq(from = as.Date("2024-03-01"), to = as.Date("2024-03-31"), by = 1)
+date_May <- seq(from = as.Date("2024-05-01"), to = as.Date("2024-05-31"), by = 1)
+date_July <- seq(from = as.Date("2024-07-01"), to = as.Date("2024-07-31"), by = 1)
+date_October <- seq(from = as.Date("2024-10-01"), to = as.Date("2024-10-31"), by = 1)
+date_December <- seq(from = as.Date("2024-12-01"), to = as.Date("2024-12-31"), by = 1)
+
+dates = c(date_March, date_May, date_July, date_October, date_December)
+
+# Determine the correct number of repetitions for Location
+cities <- c("Canberra", "Melbourne", "Sydney")
+Location <- rep(cities, length.out = length(dates))
+
+# Create a data frame to store the weather data
+weather <- data.frame(
+  Date = dates,
+  Temperature = round(runif(length(dates), 2, 37), 1),
+  Humidity = sample(50:100, length(dates), replace = TRUE),
+  Pressure = sample(995:1015, length(dates), replace = TRUE),
+  WindSpeed = sample(5:20, length(dates), replace = TRUE),
+  WindDirection = sample(c("N", "NE", "E", "SE", "S", "SW", "W", "NW"), length(dates), replace = TRUE),
+  DewPoint = round(runif(length(dates), 10, 15), 1),
+  CloudCover = sample(0:100, length(dates), replace = TRUE),
+  Precipitation = round(runif(length(dates), 0, 15), 1),
+  Visibility = sample(5:20, length(dates), replace = TRUE),
+  UVIndex = sample(1:12, length(dates), replace = TRUE),
+  Condition = sample(c("Sunny", "Partly Cloudy", "Rainy", "Snowy"), length(dates), replace = TRUE),
+  Location = Location
+)
+
+```
+
+***
+
+## Initial Section:
+
+## Submission for Part A: Data Understanding
+
+
+```{asis, echo=TRUE}
+
+----------------------------------
+
+1- The data set description goes here
+
+This dataset includes five months' worth of weather data from three cities in 2024: Canberra, Melbourne, and Sydney. The dataset contains characteristics like temperature, humidity, pressure, wind speed, etc., and each row represents a single day. This dataset is useful for researching climate behaviour, examining weather trends, and making predictions for various weather scenarios in certain cities.
+
+
+
+
+----------------------------------
+```
+```{r}
+#----------------------------------#
+
+# 2-  The code for task 2 goes here
+# Generate summary statistics for the dataset
+summary(weather)
+
+
+
+#----------------------------------#
+
+# 3-  The code for task 3 goes here
+# Generate a histogram of temperature readings
+hist(weather$Temperature, main = "Temperature Distribution", xlab = "Temperature (°C)", col = "lightblue")
+
+
+
+#----------------------------------#
+```
+```{asis, echo=TRUE}
+4- The reflection and notes for task 2 and 3 goes here
+
+For task 2, Based on the summary statistics, we can see that the temperature varies from 2°C to 37°C, and the humidity levels vary from 50% to 100%. The pressure stays between 995 and 1015 millibars, which is a somewhat small range.
+
+
+
+For task 3, The temperature measurements' histogram, which displays a fairly uniform distribution over the range with some concentration in the 20–30°C range, represents the usual weather for the cities that were chosen.
+
+
+
+----------------------------------
+
+```
+
+## Submission for part B: Vector and Matrix Manipulation
+
+
+```{r}
+#----------------------------------#
+
+# 1-  The code for task 1 goes here
+# Calculate the average temperature per month
+average_temp <- tapply(weather$Temperature, format(weather$Date, "%Y-%m"), mean)
+average_temp
+
+
+
+#----------------------------------#
+
+# 2-  The code for task 2 goes here
+# Calculate the average humidity for each city
+average_humidity <- tapply(weather$Humidity, list(weather$Location, format(weather$Date, "%Y-%m")), mean)
+average_humidity
+
+
+
+#----------------------------------#
+
+# 3-  The code for task 3 goes here
+# Create a matrix for average monthly temperature, humidity, pressure, and wind speed
+monthly_matrix <- aggregate(cbind(Temperature, Humidity, Pressure, WindSpeed) ~ format(Date, "%Y-%m"), weather, mean)
+monthly_matrix
+
+
+
+#----------------------------------#
+
+# 4-  The code for task 4 goes here
+# Create a matrix for each city's average temperature, humidity, pressure, and wind speed
+city_matrix <- aggregate(cbind(Temperature, Humidity, Pressure, WindSpeed) ~ Location, weather, mean)
+city_matrix
+
+
+
+#----------------------------------#
+
+# 5-  The code for task 5 goes here
+# Create an array with monthly and city data
+city_array <- array(c(monthly_matrix$Temperature, monthly_matrix$Humidity, monthly_matrix$Pressure, monthly_matrix$WindSpeed),
+                    dim = c(5, 3, 4),
+                    dimnames = list(month = unique(format(weather$Date, "%Y-%m")),
+                                    city = unique(weather$Location),
+                                    variables = c("Temp", "Humidity", "Pressure", "WindSpeed")))
+city_array
+
+
+#----------------------------------#
+
+# 6-  The code for task 6 goes here
+# Perform matrix multiplication of the transpose with the vector of average temperatures
+matrix_product <- t(as.matrix(monthly_matrix[,2:5])) %*% as.vector(average_temp)
+matrix_product
+
+
+
+#----------------------------------#
+
+# 7-  The code for task 7 goes here
+# Custom function to flag above or below average temperatures
+compare_temp <- function(temp, avg_temp) {
+  ifelse(temp > avg_temp, 'Above', 'Below')
+}
+
+# Apply the function and add the results as a new column
+weather$Temp_Comparison <- sapply(weather$Temperature, compare_temp, avg_temp = average_temp[format(weather$Date, "%Y-%m")])
+head(weather)
+
+
+
+#----------------------------------#
+
+```
+
+*** 
+
+## Submission for part C: Looping and Conditional Statements
+Please follow this structure:
+
+```{r}
+#----------------------------------#
+
+# 1-  The code for task 1 goes here
+
+# Calculate the average pressure for each month using a loop
+avg_pressure <- sapply(split(weather$Pressure, format(weather$Date, "%Y-%m")), mean)
+avg_pressure
+
+
+#----------------------------------#
+
+# 2-  The code for task 2 goes here
+# Count days with temperature above 25°C in Sydney
+days_above_25_sydney <- sum(weather$Temperature > 25 & weather$Location == 'Sydney')
+days_above_25_sydney
+
+
+
+#----------------------------------#
+
+# 3-  The code for task 3 goes here
+# Calculate the average humidity for days with temperature below 21°C in Canberra
+avg_humidity_canberra <- mean(weather$Humidity[weather$Temperature < 21 & weather$Location == 'Canberra'])
+avg_humidity_canberra
+
+
+
+#----------------------------------#
+
+# 4-  The code for task 4 goes here
+# Count days with UV Index above 7 in Canberra and Sydney
+days_high_uv <- sum(weather$UVIndex > 7 & (weather$Location == 'Canberra' | weather$Location == 'Sydney'))
+days_high_uv
+
+
+
+#----------------------------------#
+
+# 5-  The code for task 5 goes here
+# Create a matrix for monthly total precipitation by city
+total_precipitation <- matrix(0, nrow=5, ncol=3, dimnames = list(month = unique(format(weather$Date, "%Y-%m")), city = unique(weather$Location)))
+for (i in 1:nrow(total_precipitation)) {
+  for (j in 1:ncol(total_precipitation)) {
+    total_precipitation[i, j] <- sum(weather$Precipitation[format(weather$Date, "%Y-%m") == rownames(total_precipitation)[i] & weather$Location == colnames(total_precipitation)[j]])
+  }
+}
+total_precipitation
+
+
+
+#----------------------------------#
+```
+
+*** 
+
+## Submission for part D: Data Frame Manipulation
+Please follow this structure:
+
+```{r}
+#----------------------------------#
+
+# 1-  The code for task 1 goes here
+library(dplyr)
+# File names
+file_names <- c("201808.csv", "201809.csv", "201810.csv", "201811.csv", "201812.csv")
+
+#----------------------------------#
+
+# 2-  The code for task 2 goes here
+# Check the dimensions of the combined data frame
+weather_data_list <- lapply(file_names, function(file) {
+  read.csv(file, skip = 7)
+})
+
+# Combine all data frames into one
+weather <- do.call(rbind, weather_data_list)
+
+# Check the dimensions of the combined data frame
+print(dim(weather))
+
+
+#----------------------------------#
+
+# 3-  The code for task 3 goes here
+# Check each column's structure and summary
+for (col in names(weather)) {
+  cat("\nStructure of", col, ":\n")
+  str(weather[[col]])
+  cat("\nSummary of", col, ":\n")
+  print(summary(weather[[col]]))
+}
+
+
+#----------------------------------#
+
+# 4-  The code for task 4 goes here
+# Simulate a column with all NAs
+weather <- weather[, colSums(!is.na(weather)) > 0]
+
+
+
+
+#----------------------------------#
+# 5-  The code for task 5 goes here
+# Ensure the Date column is correctly formatted as Date type
+colnames(weather) <- gsub(" |\\.", "_", colnames(weather))
+
+
+
+
+
+#----------------------------------#
+
+# 6-  The code for task 6 goes here
+# Create new columns for month and year from the Date column
+weather <- weather %>%
+  mutate(Date = as.Date(Date, format="%Y-%m-%d"),  # Ensure Date is in Date format
+         Month = format(Date, "%m"),
+         Year = format(Date, "%Y"))
+
+# Display the first few rows to check
+head(weather)
+
+
+
+#----------------------------------#
+
+# 7-  The code for task 7 goes here
+# Save the combined weather data file with all changes to a single CSV file
+write.csv(weather, "combined_weather_data.csv", row.names = FALSE)
+
+
+#----------------------------------#
+```
+
+***
+
+## Overall Conclusion
+
+I gained knowledge of a variety of data manipulation strategies from this assignment, such as looping, matrix operations, data wrangling, and condition handling. My practical abilities in handling real-world data sets were enhanced by working with weather data, and the insights gained from data analysis could be useful in climate studies and weather forecasting.
+
