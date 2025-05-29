@@ -1,13 +1,4 @@
----
-title: 'Assignment 1 - Solution'
-author name: 'Minhajul Islam Nion'
-author ID: 'u3266650'
-output:
-  html_document: rmdformats::readthedown
-editor_options: 
-  markdown: 
-    wrap: 100
----
+
 ***
 
 ## Data Description
